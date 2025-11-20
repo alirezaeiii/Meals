@@ -10,7 +10,8 @@ data class MealEntity(
     val strMeal: String,
     val strCategory: String,
     val strMealThumb: String,
-    val strYoutube: String?
+    val strYoutube: String?,
+    val strInstructions: String
 )
 
 fun List<MealEntity>.asDomainModel() = map(MealEntity::asDomainModel)
@@ -20,5 +21,6 @@ private fun MealEntity.asDomainModel() = Meal(
     strMeal = strMeal,
     strCategory = strCategory,
     strMealThumb = strMealThumb,
-    strYoutube = strYoutube
+    strYoutube = strYoutube,
+    strInstructions = strInstructions
 )

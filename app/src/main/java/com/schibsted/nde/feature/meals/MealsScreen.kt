@@ -59,8 +59,8 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.schibsted.nde.domain.Meal
 import com.schibsted.nde.feature.common.MealImage
-import com.schibsted.nde.model.MealResponse
 import com.schibsted.nde.ui.typography
 import kotlinx.coroutines.launch
 
@@ -193,7 +193,7 @@ fun MealsScreenContent(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Un
                                             0.dp
                                         )
                                     ) {
-                                        MealRowComposable(meal)
+                                        MealRowComposable(meal, navigateToDetail)
                                     }
                                 }
                             }
@@ -206,7 +206,7 @@ fun MealsScreenContent(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Un
 }
 
 @Composable
-fun MealRowComposable(meal: Meal) {
+fun MealRowComposable(meal: Meal, navigateToDetail: (Meal) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

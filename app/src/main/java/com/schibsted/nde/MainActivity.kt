@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.schibsted.nde.domain.Meal
 import com.schibsted.nde.feature.common.Screens
 import com.schibsted.nde.feature.common.Screens.Companion.MEAL
 import com.schibsted.nde.feature.details.DetailsScreen
@@ -50,7 +51,7 @@ fun NavGraph(navController: NavHostController) {
         composable(Screens.Meals.title) {
             MealsScreen(hiltViewModel()) { meal ->
                 val json =
-                    Uri.encode(Gson().toJson(meal, object : TypeToken<MealResponse>() {}.type))
+                    Uri.encode(Gson().toJson(meal, object : TypeToken<Meal>() {}.type))
                 navController.navigate(
                     Screens.Details.title.replace
                         ("{${MEAL}}", json)
