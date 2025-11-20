@@ -26,9 +26,8 @@ class MealsViewModel @Inject constructor(
         loadMeals()
     }
 
-    fun loadMeals(query: String? = null) {
+    fun loadMeals(isRefreshing: Boolean = false) {
         viewModelScope.launch {
-
             mealsRepository.getResult().collectLatest { uiState ->
                 when (uiState) {
                     is Async.Loading ->
@@ -40,12 +39,11 @@ class MealsViewModel @Inject constructor(
                             )
                         )
 
-
                     is Async.Success -> {
                         val meals = uiState.data
-                        query?.let {
-                            submitQuery(query, meals)
-                        } ?: run {
+                        if (isRefreshing) {
+                            submitQuery(_state.value.query, meals)
+                        } else {
                             _state.emit(
                                 _state.value.copy(
                                     meals = meals,
@@ -100,7 +98,8 @@ class MealsViewModel @Inject constructor(
                 meals = meals,
                 filteredMeals = filteredMeals,
                 isLoading = false,
-                isRefreshing = false
+                isRefreshing = false,
+                error = ""
             )
         )
     }

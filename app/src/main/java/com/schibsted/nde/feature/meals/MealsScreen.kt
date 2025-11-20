@@ -144,7 +144,7 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
                 )
             },
             content = {
-                MealsScreenContent(viewModel, query, navigateToDetail)
+                MealsScreenContent(viewModel, navigateToDetail)
             }
         )
     }
@@ -154,7 +154,6 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
 @Composable
 fun MealsScreenContent(
     viewModel: MealsViewModel,
-    query: String,
     navigateToDetail: (Meal) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
@@ -175,7 +174,7 @@ fun MealsScreenContent(
         Column {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(state.isRefreshing),
-                onRefresh = { viewModel.loadMeals(query) },
+                onRefresh = { viewModel.loadMeals(true) },
                 indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
