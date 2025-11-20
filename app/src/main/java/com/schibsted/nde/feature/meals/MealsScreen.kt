@@ -168,7 +168,7 @@ fun MealsScreenContent(
             if (state.isWarning) {
                 Toast.makeText(LocalContext.current, state.error, Toast.LENGTH_LONG).show()
             } else {
-                ErrorScreen(state.error) { viewModel.loadMeals(query) }
+                ErrorScreen(state.error) { viewModel.loadMeals() }
             }
         }
 
