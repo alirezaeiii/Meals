@@ -7,8 +7,10 @@ import com.schibsted.nde.domain.Meal
 import com.schibsted.nde.model.MealResponse
 import com.schibsted.nde.utils.Async
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +23,13 @@ class MealsViewModel @Inject constructor(
 
     val state: StateFlow<MealsViewState>
         get() = _state
+
+    private val _showWarningUiEvent = MutableSharedFlow<UiEvent>()
+    val showWarningUiEvent = _showWarningUiEvent.asSharedFlow()
+
+    sealed class UiEvent {
+        data class ShowWarning(val message: String) : UiEvent()
+    }
 
     init {
         loadMeals()
@@ -49,7 +58,8 @@ class MealsViewModel @Inject constructor(
                                     meals = meals,
                                     filteredMeals = meals,
                                     isLoading = false,
-                                    isRefreshing = false
+                                    isRefreshing = false,
+                                    error = ""
                                 )
                             )
                         }
@@ -64,6 +74,9 @@ class MealsViewModel @Inject constructor(
                                 isLoading = false
                             )
                         )
+                        if(uiState.isWarning) {
+                            _showWarningUiEvent.emit(UiEvent.ShowWarning(uiState.message))
+                        }
                     }
                 }
             }
@@ -81,7 +94,7 @@ class MealsViewModel @Inject constructor(
         }
     }
 
-    suspend fun executeQuery(
+    private suspend fun executeQuery(
         query: String?,
         meals: List<Meal>
     ) {

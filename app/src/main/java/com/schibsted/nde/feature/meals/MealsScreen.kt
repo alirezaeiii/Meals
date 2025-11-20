@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +59,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -72,7 +74,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @ExperimentalFoundationApi
 @Composable
-fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
+fun MealsScreen(
+    viewModel: MealsViewModel = hiltViewModel(),
+    navigateToDetail: (Meal) -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -163,11 +168,17 @@ fun MealsScreenContent(
             ProgressScreen()
         }
 
-        if (state.error.isNotEmpty()) {
-            if (state.isWarning) {
-                Toast.makeText(LocalContext.current, state.error, Toast.LENGTH_LONG).show()
-            } else {
-                ErrorScreen(state.error) { viewModel.loadMeals() }
+        if(state.error.isNotEmpty() && !state.isWarning) {
+            ErrorScreen(state.error) { viewModel.loadMeals() }
+        }
+
+        val context = LocalContext.current
+        LaunchedEffect(Unit) {
+            viewModel.showWarningUiEvent.collect { event ->
+                when (event) {
+                    is MealsViewModel.UiEvent.ShowWarning ->
+                        Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
 
