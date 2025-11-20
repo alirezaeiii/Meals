@@ -3,6 +3,7 @@ package com.schibsted.nde.feature.meals
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.schibsted.nde.data.MealsRepository
+import com.schibsted.nde.domain.Meal
 import com.schibsted.nde.utils.Async
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,36 +25,62 @@ class MealsViewModel @Inject constructor(
         loadMeals()
     }
 
-    fun loadMeals(isRefreshing: Boolean = false) {
-        if(isRefreshing) {
-            mealsRepository.refresh()
-        }
+    fun loadMeals(query: String? = null) {
         viewModelScope.launch {
+
             mealsRepository.getMeals().collectLatest { uiState ->
                 when (uiState) {
                     is Async.Loading ->
                         _state.emit(_state.value.copy(isLoading = true))
 
                     is Async.Success -> {
-                        val meals = uiState.data
-                        _state.emit(_state.value.copy(meals = meals, filteredMeals = meals))
                         _state.emit(_state.value.copy(isLoading = false))
+                        val meals = uiState.data
+                        query?.let {
+                            mealsRepository.refresh()
+                            submitQuery(query, meals)
+                        } ?: run {
+                            _state.emit(
+                                _state.value.copy(
+                                    meals = meals,
+                                    filteredMeals = meals
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-    fun submitQuery(query: String?) {
-        viewModelScope.launch {
-            val filteredMeals = if (query?.isNotBlank() == true) {
-                _state.value.meals
-            } else {
-                _state.value.meals.filter {
-                    it.strMeal.lowercase().contains(query?.lowercase() ?: "")
-                }
-            }
-            _state.emit(_state.value.copy(query = query, filteredMeals = filteredMeals))
+    suspend fun submitQuery(
+        query: String?,
+        meals: List<Meal> = emptyList()
+    ) {
+        if (meals.isEmpty()) {
+            executeQuery(query, _state.value.meals)
+        } else {
+            executeQuery(query, meals)
         }
+    }
+
+    suspend fun executeQuery(
+        query: String?,
+        meals: List<Meal>
+    ) {
+        val filteredMeals = if (query?.isBlank() == true) {
+            meals
+        } else {
+            meals.filter {
+                it.strMeal.lowercase().contains(query?.lowercase()?.trim() ?: "")
+            }
+        }
+        _state.emit(
+            _state.value.copy(
+                query = query,
+                meals = meals,
+                filteredMeals = filteredMeals
+            )
+        )
     }
 }

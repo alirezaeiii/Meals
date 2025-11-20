@@ -72,6 +72,7 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    var query by rememberSaveable { mutableStateOf("") }
 
     ModalBottomSheetLayout(sheetContent = {
         val focusManager = LocalFocusManager.current
@@ -83,8 +84,6 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
             }
         }
         Column(modifier = Modifier.padding(16.dp)) {
-            var query by rememberSaveable { mutableStateOf("") }
-
             TextField(
                 value = query,
                 onValueChange = { query = it },
@@ -92,8 +91,8 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
-                    viewModel.submitQuery(query)
                     coroutineScope.launch {
+                        viewModel.submitQuery(query)
                         modalBottomSheetState.hide()
                     }
                 }),
@@ -103,9 +102,9 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
 
             Row(modifier = Modifier.align(Alignment.End)) {
                 OutlinedButton(onClick = {
-                    viewModel.submitQuery(null)
                     query = ""
                     coroutineScope.launch {
+                        viewModel.submitQuery(null)
                         modalBottomSheetState.hide()
                     }
                 }) {
@@ -113,8 +112,8 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(onClick = {
-                    viewModel.submitQuery(query)
                     coroutineScope.launch {
+                        viewModel.submitQuery(query)
                         modalBottomSheetState.hide()
                     }
                 }) {
@@ -141,7 +140,7 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
                 )
             },
             content = {
-                MealsScreenContent(viewModel, navigateToDetail)
+                MealsScreenContent(viewModel, query, navigateToDetail)
             }
         )
     }
@@ -149,14 +148,18 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
 
 @ExperimentalFoundationApi
 @Composable
-fun MealsScreenContent(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
+fun MealsScreenContent(
+    viewModel: MealsViewModel,
+    query: String,
+    navigateToDetail: (Meal) -> Unit
+) {
     val state by viewModel.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(state.isLoading),
-                onRefresh = { viewModel.loadMeals(true) },
+                onRefresh = { viewModel.loadMeals(query) },
                 indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

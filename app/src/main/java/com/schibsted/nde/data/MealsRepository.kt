@@ -21,6 +21,7 @@ class MealsRepository @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) {
     private var cacheIsDirty = false
+
     fun getMeals(): Flow<Async<List<Meal>>> = flow {
         emit(Async.Loading)
 
