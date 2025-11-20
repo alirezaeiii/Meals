@@ -28,13 +28,13 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
+import com.schibsted.nde.domain.Meal
 import com.schibsted.nde.feature.common.MealImage
-import com.schibsted.nde.model.MealResponse
 
 @OptIn(ExperimentalMotionApi::class)
 @Composable
 fun DetailsScreen(
-    meal: MealResponse,
+    meal: Meal,
     navigateUp: () -> Unit
 ) {
     val scroll = rememberScrollState(0)

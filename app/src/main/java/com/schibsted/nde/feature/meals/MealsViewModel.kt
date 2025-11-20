@@ -50,6 +50,7 @@ class MealsViewModel @Inject constructor(
                                 _state.value.copy(
                                     meals = meals,
                                     filteredMeals = meals,
+                                    isLoading = false,
                                     isRefreshing = false
                                 )
                             )

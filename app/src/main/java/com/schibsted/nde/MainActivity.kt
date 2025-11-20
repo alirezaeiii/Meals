@@ -22,7 +22,6 @@ import com.schibsted.nde.feature.common.Screens
 import com.schibsted.nde.feature.common.Screens.Companion.MEAL
 import com.schibsted.nde.feature.details.DetailsScreen
 import com.schibsted.nde.feature.meals.MealsScreen
-import com.schibsted.nde.model.MealResponse
 import com.schibsted.nde.ui.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,7 +67,7 @@ fun NavGraph(navController: NavHostController) {
             DetailsScreen(
                 Gson().fromJson(
                     from.arguments?.getString(MEAL),
-                    object : TypeToken<MealResponse>() {}.type,
+                    object : TypeToken<Meal>() {}.type,
                 )
             ) {
                 navController.navigateUp()
