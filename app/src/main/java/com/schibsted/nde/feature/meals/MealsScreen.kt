@@ -68,7 +68,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @ExperimentalFoundationApi
 @Composable
-fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (MealResponse) -> Unit) {
+fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
     val coroutineScope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -149,14 +149,14 @@ fun MealsScreen(viewModel: MealsViewModel, navigateToDetail: (MealResponse) -> U
 
 @ExperimentalFoundationApi
 @Composable
-fun MealsScreenContent(viewModel: MealsViewModel, navigateToDetail: (MealResponse) -> Unit) {
+fun MealsScreenContent(viewModel: MealsViewModel, navigateToDetail: (Meal) -> Unit) {
     val state by viewModel.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(state.isLoading),
-                onRefresh = { viewModel.loadMeals() },
+                onRefresh = { viewModel.loadMeals(true) },
                 indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -193,7 +193,7 @@ fun MealsScreenContent(viewModel: MealsViewModel, navigateToDetail: (MealRespons
                                             0.dp
                                         )
                                     ) {
-                                        MealRowComposable(meal, navigateToDetail)
+                                        MealRowComposable(meal)
                                     }
                                 }
                             }
@@ -206,7 +206,7 @@ fun MealsScreenContent(viewModel: MealsViewModel, navigateToDetail: (MealRespons
 }
 
 @Composable
-fun MealRowComposable(meal: MealResponse, navigateToDetail: (MealResponse) -> Unit) {
+fun MealRowComposable(meal: Meal) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
