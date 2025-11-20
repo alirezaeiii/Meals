@@ -3,9 +3,11 @@ package com.schibsted.nde.feature.meals
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.schibsted.nde.data.MealsRepository
+import com.schibsted.nde.utils.Async
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,12 +24,23 @@ class MealsViewModel @Inject constructor(
         loadMeals()
     }
 
-    fun loadMeals() {
+    fun loadMeals(isRefreshing: Boolean = false) {
+        if(isRefreshing) {
+            mealsRepository.refresh()
+        }
         viewModelScope.launch {
-            _state.emit(_state.value.copy(isLoading = true))
-            val meals = mealsRepository.getMeals()
-            _state.emit(_state.value.copy(meals = meals, filteredMeals = meals))
-            _state.emit(_state.value.copy(isLoading = false))
+            mealsRepository.getMeals().collectLatest { uiState ->
+                when (uiState) {
+                    is Async.Loading ->
+                        _state.emit(_state.value.copy(isLoading = true))
+
+                    is Async.Success -> {
+                        val meals = uiState.data
+                        _state.emit(_state.value.copy(meals = meals, filteredMeals = meals))
+                        _state.emit(_state.value.copy(isLoading = false))
+                    }
+                }
+            }
         }
     }
 
