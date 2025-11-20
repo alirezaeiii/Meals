@@ -2,6 +2,7 @@ package com.schibsted.nde.feature.meals
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,6 +53,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -60,7 +62,9 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.feature.common.ErrorScreen
 import com.schibsted.nde.feature.common.MealImage
+import com.schibsted.nde.feature.common.ProgressScreen
 import com.schibsted.nde.ui.typography
 import kotlinx.coroutines.launch
 
@@ -156,16 +160,28 @@ fun MealsScreenContent(
     val state by viewModel.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
+        if (state.isLoading) {
+            ProgressScreen()
+        }
+
+        if (state.error.isNotEmpty()) {
+            if (state.isWarning) {
+                Toast.makeText(LocalContext.current, state.error, Toast.LENGTH_LONG).show()
+            } else {
+                ErrorScreen(state.error) { viewModel.loadMeals(query) }
+            }
+        }
+
         Column {
             SwipeRefresh(
-                state = rememberSwipeRefreshState(state.isLoading),
+                state = rememberSwipeRefreshState(state.isRefreshing),
                 onRefresh = { viewModel.loadMeals(query) },
                 indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxSize()
             ) {
-                if (!state.isLoading) {
+                if (!state.isLoading && (state.error.isEmpty() || state.isWarning)) {
                     if (state.filteredMeals.isEmpty()) {
                         Text(text = "No meals found")
                     } else {

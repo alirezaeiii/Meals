@@ -2,7 +2,7 @@ package com.schibsted.nde.feature.meals
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.schibsted.nde.data.MealsRepository
+import com.schibsted.nde.data.MealsRepositoryImpl
 import com.schibsted.nde.domain.Meal
 import com.schibsted.nde.utils.Async
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MealsViewModel @Inject constructor(
-    private val mealsRepository: MealsRepository,
+    private val mealsRepository: MealsRepositoryImpl,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MealsViewState(isLoading = true))
 
@@ -28,25 +28,42 @@ class MealsViewModel @Inject constructor(
     fun loadMeals(query: String? = null) {
         viewModelScope.launch {
 
-            mealsRepository.getMeals().collectLatest { uiState ->
+            mealsRepository.getResult().collectLatest { uiState ->
                 when (uiState) {
                     is Async.Loading ->
-                        _state.emit(_state.value.copy(isLoading = true))
+                        _state.emit(
+                            _state.value.copy(
+                                isLoading = !uiState.isRefreshing,
+                                isRefreshing = uiState.isRefreshing,
+                                error = ""
+                            )
+                        )
+
 
                     is Async.Success -> {
-                        _state.emit(_state.value.copy(isLoading = false))
                         val meals = uiState.data
                         query?.let {
-                            mealsRepository.refresh()
                             submitQuery(query, meals)
                         } ?: run {
                             _state.emit(
                                 _state.value.copy(
                                     meals = meals,
-                                    filteredMeals = meals
+                                    filteredMeals = meals,
+                                    isRefreshing = false
                                 )
                             )
                         }
+                    }
+
+                    is Async.Error -> {
+                        _state.emit(
+                            _state.value.copy(
+                                error = uiState.message,
+                                isWarning = uiState.isWarning,
+                                isRefreshing = false,
+                                isLoading = false
+                            )
+                        )
                     }
                 }
             }
@@ -79,7 +96,9 @@ class MealsViewModel @Inject constructor(
             _state.value.copy(
                 query = query,
                 meals = meals,
-                filteredMeals = filteredMeals
+                filteredMeals = filteredMeals,
+                isLoading = false,
+                isRefreshing = false
             )
         )
     }
