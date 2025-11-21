@@ -81,7 +81,6 @@ fun MealsScreen(
     val coroutineScope = rememberCoroutineScope()
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    var query by rememberSaveable { mutableStateOf("") }
 
     ModalBottomSheetLayout(sheetContent = {
         val focusManager = LocalFocusManager.current
@@ -93,6 +92,8 @@ fun MealsScreen(
             }
         }
         Column(modifier = Modifier.padding(16.dp)) {
+            var query by rememberSaveable { mutableStateOf("") }
+
             TextField(
                 value = query,
                 onValueChange = { query = it },
@@ -168,7 +169,7 @@ fun MealsScreenContent(
             ProgressScreen()
         }
 
-        if(state.error.isNotEmpty() && !state.isWarning) {
+        if (state.error.isNotEmpty() && !state.isWarning) {
             ErrorScreen(state.error) { viewModel.loadMeals() }
         }
 
@@ -235,7 +236,10 @@ fun MealsScreenContent(
 }
 
 @Composable
-fun MealRowComposable(meal: Meal, navigateToDetail: (Meal) -> Unit) {
+fun MealRowComposable(
+    meal: Meal,
+    navigateToDetail: (Meal) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
