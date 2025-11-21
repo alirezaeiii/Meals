@@ -53,15 +53,7 @@ class MealsViewModel @Inject constructor(
                         if (isRefreshing) {
                             submitQuery(_state.value.query, meals)
                         } else {
-                            _state.emit(
-                                _state.value.copy(
-                                    meals = meals,
-                                    filteredMeals = meals,
-                                    isLoading = false,
-                                    isRefreshing = false,
-                                    error = ""
-                                )
-                            )
+                            _state.emit(MealsViewState(meals = meals, filteredMeals = meals))
                         }
                     }
 
@@ -74,7 +66,7 @@ class MealsViewModel @Inject constructor(
                                 isLoading = false
                             )
                         )
-                        if(uiState.isWarning) {
+                        if (uiState.isWarning) {
                             _showWarningUiEvent.emit(UiEvent.ShowWarning(uiState.message))
                         }
                     }
@@ -106,13 +98,10 @@ class MealsViewModel @Inject constructor(
             }
         }
         _state.emit(
-            _state.value.copy(
+            MealsViewState(
                 query = query,
                 meals = meals,
-                filteredMeals = filteredMeals,
-                isLoading = false,
-                isRefreshing = false,
-                error = ""
+                filteredMeals = filteredMeals
             )
         )
     }
