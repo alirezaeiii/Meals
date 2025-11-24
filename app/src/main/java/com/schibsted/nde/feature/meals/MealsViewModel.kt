@@ -75,21 +75,12 @@ class MealsViewModel @Inject constructor(
         }
     }
 
+
     suspend fun submitQuery(
         query: String?,
-        meals: List<Meal> = emptyList()
+        items: List<Meal>? = null
     ) {
-        if (meals.isEmpty()) {
-            executeQuery(query, _state.value.meals)
-        } else {
-            executeQuery(query, meals)
-        }
-    }
-
-    private suspend fun executeQuery(
-        query: String?,
-        meals: List<Meal>
-    ) {
+        val meals = items ?: _state.value.meals
         val filteredMeals = if (query?.isBlank() == true) {
             meals
         } else {
