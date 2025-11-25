@@ -75,7 +75,6 @@ class MealsViewModel @Inject constructor(
         }
     }
 
-
     suspend fun submitQuery(
         query: String?,
         items: List<Meal>? = null
