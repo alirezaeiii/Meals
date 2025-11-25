@@ -76,23 +76,21 @@ class MealsViewModel @Inject constructor(
     }
 
     suspend fun submitQuery(
-        query: String?,
-        items: List<Meal>? = null
-    ) {
-        val meals = items ?: _state.value.meals
-        val filteredMeals = if (query?.isBlank() == true) {
-            meals
-        } else {
-            meals.filter {
-                it.strMeal.lowercase().contains(query?.lowercase()?.trim() ?: "")
-            }
+    query: String?,
+    items: List<Meal>? = null
+) {
+    val meals = items ?: _state.value.meals
+    val filteredMeals = if (query.isNullOrBlank()) {
+        meals
+    } else {
+        meals.filter {
+            it.strMeal.contains(query.trim(), ignoreCase = true)
         }
-        _state.emit(
-            MealsViewState(
-                query = query,
-                meals = meals,
-                filteredMeals = filteredMeals
-            )
-        )
     }
+    _state.value = MealsViewState(
+        query = query,
+        meals = meals,
+        filteredMeals = filteredMeals
+    )
+   }
 }
