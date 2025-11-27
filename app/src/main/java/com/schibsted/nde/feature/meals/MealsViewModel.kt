@@ -75,22 +75,22 @@ class MealsViewModel @Inject constructor(
         }
     }
 
-    suspend fun submitQuery(
-    query: String?,
-    items: List<Meal>? = null
-) {
-    val meals = items ?: _state.value.meals
-    val filteredMeals = if (query.isNullOrBlank()) {
-        meals
-    } else {
-        meals.filter {
-            it.strMeal.contains(query.trim(), ignoreCase = true)
+    fun submitQuery(
+        query: String?,
+        items: List<Meal>? = null
+    ) {
+        val meals = items ?: _state.value.meals
+        val filteredMeals = if (query.isNullOrBlank()) {
+            meals
+        } else {
+            meals.filter {
+                it.strMeal.contains(query.trim(), ignoreCase = true)
+            }
         }
+        _state.value = MealsViewState(
+            query = query,
+            meals = meals,
+            filteredMeals = filteredMeals
+        )
     }
-    _state.value = MealsViewState(
-        query = query,
-        meals = meals,
-        filteredMeals = filteredMeals
-    )
-   }
 }

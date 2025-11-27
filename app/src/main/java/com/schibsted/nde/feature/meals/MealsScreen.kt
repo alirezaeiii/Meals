@@ -101,8 +101,8 @@ fun MealsScreen(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = {
+                    viewModel.submitQuery(query)
                     coroutineScope.launch {
-                        viewModel.submitQuery(query)
                         modalBottomSheetState.hide()
                     }
                 }),
@@ -112,9 +112,9 @@ fun MealsScreen(
 
             Row(modifier = Modifier.align(Alignment.End)) {
                 OutlinedButton(onClick = {
+                    viewModel.submitQuery(null)
                     query = ""
                     coroutineScope.launch {
-                        viewModel.submitQuery(null)
                         modalBottomSheetState.hide()
                     }
                 }) {
@@ -122,8 +122,8 @@ fun MealsScreen(
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(onClick = {
+                    viewModel.submitQuery(query)
                     coroutineScope.launch {
-                        viewModel.submitQuery(query)
                         modalBottomSheetState.hide()
                     }
                 }) {
