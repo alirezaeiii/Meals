@@ -1,6 +1,6 @@
 package com.schibsted.nde.di
 
-import com.schibsted.nde.data.MealsRepositoryImpl
+import com.schibsted.nde.data.MealsRepository
 import com.schibsted.nde.domain.BaseRepository
 import com.schibsted.nde.domain.Meal
 import com.schibsted.nde.model.MealResponse
@@ -16,5 +16,5 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    internal abstract fun bindRepository(repository: MealsRepositoryImpl): BaseRepository<Meal, MealResponse>
+    internal abstract fun bindRepository(repository: MealsRepository): BaseRepository<Meal, MealResponse>
 }

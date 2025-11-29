@@ -16,7 +16,7 @@ abstract class BaseRepository<T, V>(
 
     protected abstract suspend fun fetch(): List<V>
 
-    protected abstract suspend fun saveFetchResult(t: List<V>)
+    protected abstract suspend fun saveFetchResult(items: List<V>)
 
     fun getResult(): Flow<Async<List<T>>> = flow {
         emit(Async.Loading())

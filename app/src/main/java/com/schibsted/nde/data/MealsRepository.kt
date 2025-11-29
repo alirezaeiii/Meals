@@ -15,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MealsRepositoryImpl @Inject constructor(
+class MealsRepository @Inject constructor(
     private val backendApi: BackendApi,
     private val dao: MealEntityDao,
     @ApplicationContext context: Context,
@@ -26,7 +26,7 @@ class MealsRepositoryImpl @Inject constructor(
 
     override suspend fun fetch(): List<MealResponse> = backendApi.getMeals().meals
 
-    override suspend fun saveFetchResult(t: List<MealResponse>) {
-        dao.insertAll(t.asDatabaseModel())
+    override suspend fun saveFetchResult(items: List<MealResponse>) {
+        dao.insertAll(items.asDatabaseModel())
     }
 }
