@@ -8,15 +8,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-abstract class BaseRepository<T, V>(
+abstract class BaseRepository<T>(
     private val context: Context,
     private val ioDispatcher: CoroutineDispatcher
 ) {
     protected abstract suspend fun query(): List<T>
 
-    protected abstract suspend fun fetch(): List<V>
+    protected abstract suspend fun fetch(): List<T>
 
-    protected abstract suspend fun saveFetchResult(items: List<V>)
+    protected abstract suspend fun saveFetchResult(items: List<T>)
 
     fun getResult(): Flow<Async<List<T>>> = flow {
         emit(Async.Loading())

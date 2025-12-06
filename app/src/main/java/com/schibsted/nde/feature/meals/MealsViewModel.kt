@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.schibsted.nde.domain.BaseRepository
 import com.schibsted.nde.domain.Meal
-import com.schibsted.nde.model.MealResponse
 import com.schibsted.nde.utils.Async
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MealsViewModel @Inject constructor(
-    private val mealsRepository: BaseRepository<Meal, MealResponse>,
+    private val mealsRepository: BaseRepository<Meal>,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MealsViewState(isLoading = true))
 
