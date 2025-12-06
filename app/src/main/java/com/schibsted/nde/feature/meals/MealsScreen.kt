@@ -2,11 +2,9 @@ package com.schibsted.nde.feature.meals
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,7 +40,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,19 +51,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.schibsted.nde.domain.Meal
-import com.schibsted.nde.feature.common.ErrorScreen
+import com.schibsted.nde.feature.common.Content
 import com.schibsted.nde.feature.common.MealImage
-import com.schibsted.nde.feature.common.ProgressScreen
 import com.schibsted.nde.ui.typography
 import kotlinx.coroutines.launch
 
@@ -162,71 +154,39 @@ fun MealsScreenContent(
     viewModel: MealsViewModel,
     navigateToDetail: (Meal) -> Unit
 ) {
-    val state by viewModel.state.collectAsState()
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (state.isLoading) {
-            ProgressScreen()
-        }
-
-        if (state.error.isNotEmpty() && !state.isWarning) {
-            ErrorScreen(state.error) { viewModel.loadMeals() }
-        }
-
-        val context = LocalContext.current
-        LaunchedEffect(Unit) {
-            viewModel.showWarningUiEvent.collect { event ->
-                when (event) {
-                    is MealsViewModel.UiEvent.ShowWarning ->
-                        Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+    Content(viewModel) {
+        val state by viewModel.state.collectAsState()
+        if (state.filteredMeals.isEmpty()) {
+            Text(text = "No meals found")
+        } else {
+            val orientation = LocalConfiguration.current.orientation
+            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    items(state.filteredMeals) { meal ->
+                        Divider(thickness = 8.dp)
+                        MealRowComposable(meal, navigateToDetail)
+                    }
                 }
-            }
-        }
-
-        Column {
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(state.isRefreshing),
-                onRefresh = { viewModel.loadMeals(true) },
-                indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxSize()
-            ) {
-                if (!state.isLoading && (state.error.isEmpty() || state.isWarning)) {
-                    if (state.filteredMeals.isEmpty()) {
-                        Text(text = "No meals found")
-                    } else {
-                        val orientation = LocalConfiguration.current.orientation
-                        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                                items(state.filteredMeals) { meal ->
-                                    Divider(thickness = 8.dp)
-                                    MealRowComposable(meal, navigateToDetail)
-                                }
-                            }
-                        } else {
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(2),
-                                modifier = Modifier.background(
-                                    MaterialTheme.colors.onSurface.copy(
-                                        alpha = 0.12f
-                                    )
-                                )
-                            ) {
-                                itemsIndexed(state.filteredMeals) { index, meal ->
-                                    val isFirstColumn = index % 2 == 0
-                                    Column(
-                                        Modifier.padding(
-                                            if (isFirstColumn) 8.dp else 4.dp,
-                                            8.dp,
-                                            if (isFirstColumn) 4.dp else 8.dp,
-                                            0.dp
-                                        )
-                                    ) {
-                                        MealRowComposable(meal, navigateToDetail)
-                                    }
-                                }
-                            }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.background(
+                        MaterialTheme.colors.onSurface.copy(
+                            alpha = 0.12f
+                        )
+                    )
+                ) {
+                    itemsIndexed(state.filteredMeals) { index, meal ->
+                        val isFirstColumn = index % 2 == 0
+                        Column(
+                            Modifier.padding(
+                                if (isFirstColumn) 8.dp else 4.dp,
+                                8.dp,
+                                if (isFirstColumn) 4.dp else 8.dp,
+                                0.dp
+                            )
+                        ) {
+                            MealRowComposable(meal, navigateToDetail)
                         }
                     }
                 }

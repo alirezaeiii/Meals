@@ -1,9 +1,9 @@
 package com.schibsted.nde.feature.meals
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.schibsted.nde.domain.BaseRepository
 import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.feature.common.BaseViewModel
 import com.schibsted.nde.utils.Async
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,24 +17,20 @@ import javax.inject.Inject
 @HiltViewModel
 class MealsViewModel @Inject constructor(
     private val mealsRepository: BaseRepository<Meal>,
-) : ViewModel() {
+) : BaseViewModel<Meal, MealsViewState>() {
     private val _state = MutableStateFlow(MealsViewState(isLoading = true))
 
-    val state: StateFlow<MealsViewState>
+    override val state: StateFlow<MealsViewState>
         get() = _state
 
     private val _showWarningUiEvent = MutableSharedFlow<UiEvent>()
-    val showWarningUiEvent = _showWarningUiEvent.asSharedFlow()
-
-    sealed class UiEvent {
-        data class ShowWarning(val message: String) : UiEvent()
-    }
+    override val showWarningUiEvent = _showWarningUiEvent.asSharedFlow()
 
     init {
-        loadMeals()
+        refresh()
     }
 
-    fun loadMeals(isRefreshing: Boolean = false) {
+    override fun refresh(isRefreshing: Boolean) {
         viewModelScope.launch {
             mealsRepository.getResult().collectLatest { uiState ->
                 when (uiState) {
@@ -52,7 +48,7 @@ class MealsViewModel @Inject constructor(
                         if (isRefreshing) {
                             submitQuery(_state.value.query, meals)
                         } else {
-                            _state.emit(MealsViewState(meals = meals, filteredMeals = meals))
+                            _state.emit(MealsViewState(items = meals, filteredMeals = meals))
                         }
                     }
 
@@ -78,7 +74,7 @@ class MealsViewModel @Inject constructor(
         query: String?,
         items: List<Meal>? = null
     ) {
-        val meals = items ?: _state.value.meals
+        val meals = items ?: _state.value.items
         val filteredMeals = if (query.isNullOrBlank()) {
             meals
         } else {
@@ -88,7 +84,7 @@ class MealsViewModel @Inject constructor(
         }
         _state.value = MealsViewState(
             query = query,
-            meals = meals,
+            items = meals,
             filteredMeals = filteredMeals
         )
     }
