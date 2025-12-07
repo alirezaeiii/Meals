@@ -8,4 +8,7 @@ data class MealsViewState(
     override val base: ViewState<Meal> = ViewState(),
     val filteredMeals: List<Meal> = emptyList(),
     val query: String? = null
-) : BaseScreenState<Meal>
+) : BaseScreenState<Meal> {
+
+    override fun copyWithBase(base: ViewState<Meal>) = copy(base = base)
+}

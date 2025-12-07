@@ -16,7 +16,7 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
-fun <T, S : BaseScreenState<T>> Content(
+fun <T, S: BaseScreenState<T>> Content(
     viewModel: BaseViewModel<T, S>,
     mainContent: @Composable (S) -> Unit
 ) {

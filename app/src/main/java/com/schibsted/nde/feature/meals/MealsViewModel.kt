@@ -19,16 +19,7 @@ class MealsViewModel @Inject constructor(
         refresh()
     }
 
-    override fun reduceLoading(old: MealsViewState, isRefreshing: Boolean): MealsViewState =
-        old.copy(
-            base = old.base.copy(
-                isLoading = !isRefreshing,
-                isRefreshing = isRefreshing,
-                error = ""
-            )
-        )
-
-    override suspend fun success(items: List<Meal>, isRefreshing: Boolean) {
+    override fun success(items: List<Meal>, isRefreshing: Boolean) {
         if (isRefreshing) {
             submitQuery(_state.value.query, items)
         } else {
@@ -40,16 +31,6 @@ class MealsViewModel @Inject constructor(
             )
         }
     }
-
-    override fun reduceError(old: MealsViewState, msg: String, isWarning: Boolean): MealsViewState =
-        old.copy(
-            base = old.base.copy(
-                error = msg,
-                isWarning = isWarning,
-                isLoading = false,
-                isRefreshing = false
-            )
-        )
 
     fun submitQuery(query: String?, items: List<Meal>? = null) {
         val meals = items ?: _state.value.base.items

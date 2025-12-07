@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<T, S>(
+abstract class BaseViewModel<T, S: BaseScreenState<T>>(
     private val repository: BaseRepository<T>,
     initialState: S
 ) : ViewModel() {
@@ -26,13 +26,8 @@ abstract class BaseViewModel<T, S>(
         data class ShowWarning(val message: String) : UiEvent()
     }
 
-    protected abstract fun reduceLoading(old: S, isRefreshing: Boolean): S
+    protected abstract fun success(items: List<T>, isRefreshing: Boolean)
 
-    protected abstract suspend fun success(items: List<T>, isRefreshing: Boolean)
-
-    protected abstract fun reduceError(old: S, msg: String, isWarning: Boolean): S
-
-    // Keep your refresh logic, but rewrite to use the reducer:
     fun refresh(isRefreshing: Boolean = false) {
         viewModelScope.launch {
             repository.getResult().collectLatest { uiState ->
@@ -61,4 +56,21 @@ abstract class BaseViewModel<T, S>(
     private fun updateState(reducer: (S) -> S) {
         _state.value = reducer(_state.value)
     }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun reduceLoading(old: S, isRefreshing: Boolean): S =
+        old.copyWithBase(old.base.copy(
+            isLoading = !isRefreshing,
+            isRefreshing = isRefreshing,
+            error = ""
+        )) as S
+
+    @Suppress("UNCHECKED_CAST")
+    private fun reduceError(old: S, msg: String, isWarning: Boolean): S =
+        old.copyWithBase(old.base.copy(
+            isLoading = false,
+            isRefreshing = false,
+            error = msg,
+            isWarning = isWarning
+        )) as S
 }
