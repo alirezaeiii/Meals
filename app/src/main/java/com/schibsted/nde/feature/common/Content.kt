@@ -16,19 +16,19 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
-fun <T, V : ViewState<T>> Content(
-    viewModel: BaseViewModel<T, V>,
-    mainContent: @Composable () -> Unit
+fun <T, S : BaseScreenState<T>> Content(
+    viewModel: BaseViewModel<T, S>,
+    mainContent: @Composable (S) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (state.isLoading) {
+        if (state.base.isLoading) {
             ProgressScreen()
         }
 
-        if (state.error.isNotEmpty() && !state.isWarning) {
-            ErrorScreen(state.error) { viewModel.refresh() }
+        if (state.base.error.isNotEmpty() && !state.base.isWarning) {
+            ErrorScreen(state.base.error) { viewModel.refresh() }
         }
 
         val context = LocalContext.current
@@ -36,22 +36,22 @@ fun <T, V : ViewState<T>> Content(
             viewModel.showWarningUiEvent.collect { event ->
                 when (event) {
                     is BaseViewModel.UiEvent.ShowWarning ->
-                        Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         Column {
             SwipeRefresh(
-                state = rememberSwipeRefreshState(state.isRefreshing),
+                state = rememberSwipeRefreshState(state.base.isRefreshing),
                 onRefresh = { viewModel.refresh(true) },
                 indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .fillMaxSize()
             ) {
-                if (!state.isLoading && (state.error.isEmpty() || state.isWarning)) {
-                    mainContent()
+                if (!state.base.isLoading && (state.base.error.isEmpty() || state.base.isWarning)) {
+                    mainContent(state)
                 }
             }
         }

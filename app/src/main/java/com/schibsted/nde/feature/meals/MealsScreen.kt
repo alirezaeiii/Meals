@@ -40,7 +40,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -154,8 +153,7 @@ fun MealsScreenContent(
     viewModel: MealsViewModel,
     navigateToDetail: (Meal) -> Unit
 ) {
-    Content(viewModel) {
-        val state by viewModel.state.collectAsState()
+    Content(viewModel) { state ->
         if (state.filteredMeals.isEmpty()) {
             Text(text = "No meals found")
         } else {

@@ -1,9 +1,9 @@
 package com.schibsted.nde.feature.common
 
-abstract class ViewState<T> {
-    abstract val items: List<T>
-    abstract val isLoading: Boolean
-    abstract val isRefreshing: Boolean
-    abstract val error: String
-    abstract val isWarning: Boolean
-}
+data class ViewState<T>(
+    val items: List<T> = emptyList(),
+    val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
+    val error: String = "",
+    val isWarning: Boolean = false,
+)
