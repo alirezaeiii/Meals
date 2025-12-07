@@ -1,6 +1,6 @@
 package com.schibsted.nde.api
 
-import com.schibsted.nde.model.MealsResponse
+import com.schibsted.nde.data.MealsResponse
 import retrofit2.http.GET
 
 interface BackendApi {

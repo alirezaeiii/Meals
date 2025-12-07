@@ -1,4 +1,4 @@
-package com.schibsted.nde.model
+package com.schibsted.nde.data
 
 import com.schibsted.nde.domain.Meal
 
