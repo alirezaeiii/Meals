@@ -2,8 +2,8 @@ package com.schibsted.nde.feature.meals
 
 import com.schibsted.nde.domain.BaseRepository
 import com.schibsted.nde.domain.Meal
-import com.schibsted.nde.feature.common.BaseViewModel
-import com.schibsted.nde.feature.common.ViewState
+import com.schibsted.nde.base.BaseViewModel
+import com.schibsted.nde.base.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -1,9 +1,10 @@
-package com.schibsted.nde.feature.common
+package com.schibsted.nde.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.schibsted.nde.domain.BaseRepository
 import com.schibsted.nde.utils.Async
+import com.schibsted.nde.utils.withBase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,20 +58,22 @@ abstract class BaseViewModel<T, S: BaseScreenState<T>>(
         _state.value = reducer(_state.value)
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun reduceLoading(old: S, isRefreshing: Boolean): S =
-        old.copyWithBase(old.base.copy(
-            isLoading = !isRefreshing,
-            isRefreshing = isRefreshing,
-            error = ""
-        )) as S
+        old.withBase(
+            old.base.copy(
+                isLoading = !isRefreshing,
+                isRefreshing = isRefreshing,
+                error = ""
+            )
+        )
 
-    @Suppress("UNCHECKED_CAST")
     private fun reduceError(old: S, msg: String, isWarning: Boolean): S =
-        old.copyWithBase(old.base.copy(
-            isLoading = false,
-            isRefreshing = false,
-            error = msg,
-            isWarning = isWarning
-        )) as S
+        old.withBase(
+            old.base.copy(
+                isLoading = false,
+                isRefreshing = false,
+                error = msg,
+                isWarning = isWarning
+            )
+        )
 }

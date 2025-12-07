@@ -1,4 +1,4 @@
-package com.schibsted.nde.feature.common
+package com.schibsted.nde.base
 
 interface BaseScreenState<T> {
     val base: ViewState<T>

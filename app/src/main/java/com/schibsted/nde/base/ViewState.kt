@@ -1,4 +1,4 @@
-package com.schibsted.nde.feature.common
+package com.schibsted.nde.base
 
 data class ViewState<T>(
     val items: List<T> = emptyList(),

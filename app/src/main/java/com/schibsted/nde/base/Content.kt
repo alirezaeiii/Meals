@@ -1,4 +1,4 @@
-package com.schibsted.nde.feature.common
+package com.schibsted.nde.base
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -14,6 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.schibsted.nde.feature.common.ErrorScreen
+import com.schibsted.nde.feature.common.ProgressScreen
 
 @Composable
 fun <T, S: BaseScreenState<T>> Content(
