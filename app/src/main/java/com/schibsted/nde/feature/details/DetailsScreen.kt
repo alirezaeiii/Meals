@@ -28,7 +28,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.feature.common.MealImage
 
 @OptIn(ExperimentalMotionApi::class)

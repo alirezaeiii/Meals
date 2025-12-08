@@ -1,8 +1,8 @@
-package com.schibsted.nde.database
+package com.schibsted.nde.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.domain.model.Meal
 
 @Entity(tableName = "meal")
 data class MealEntity(

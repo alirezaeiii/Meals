@@ -1,7 +1,7 @@
 package com.schibsted.nde.feature.meals
 
-import com.schibsted.nde.domain.BaseRepository
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.base.BaseViewModel
 import com.schibsted.nde.base.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel

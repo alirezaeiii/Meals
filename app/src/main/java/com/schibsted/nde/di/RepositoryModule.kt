@@ -1,8 +1,8 @@
 package com.schibsted.nde.di
 
-import com.schibsted.nde.data.MealsRepository
-import com.schibsted.nde.domain.BaseRepository
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.data.repository.MealsRepository
+import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.domain.model.Meal
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

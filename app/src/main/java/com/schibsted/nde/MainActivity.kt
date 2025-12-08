@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.feature.common.Screens
 import com.schibsted.nde.feature.common.Screens.Companion.MEAL
 import com.schibsted.nde.feature.details.DetailsScreen

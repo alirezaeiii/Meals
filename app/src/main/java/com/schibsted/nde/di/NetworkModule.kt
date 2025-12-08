@@ -1,6 +1,6 @@
 package com.schibsted.nde.di
 
-import com.schibsted.nde.api.BackendApi
+import com.schibsted.nde.data.api.BackendApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

@@ -2,8 +2,8 @@ package com.schibsted.nde.di
 
 import android.content.Context
 import androidx.room.Room
-import com.schibsted.nde.database.AppDatabase
-import com.schibsted.nde.database.MealEntityDao
+import com.schibsted.nde.data.database.AppDatabase
+import com.schibsted.nde.data.database.MealEntityDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

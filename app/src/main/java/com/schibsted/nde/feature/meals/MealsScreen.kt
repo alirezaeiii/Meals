@@ -55,7 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.base.Content
 import com.schibsted.nde.feature.common.MealImage
 import com.schibsted.nde.ui.typography

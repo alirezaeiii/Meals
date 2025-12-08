@@ -1,13 +1,14 @@
-package com.schibsted.nde.data
+package com.schibsted.nde.data.repository
 
 import android.content.Context
-import com.schibsted.nde.api.BackendApi
-import com.schibsted.nde.database.MealEntityDao
-import com.schibsted.nde.database.asDomainModel
+import com.schibsted.nde.data.api.BackendApi
+import com.schibsted.nde.data.database.MealEntityDao
+import com.schibsted.nde.data.database.asDomainModel
+import com.schibsted.nde.data.response.asDomainModel
 import com.schibsted.nde.di.IoDispatcher
-import com.schibsted.nde.domain.BaseRepository
-import com.schibsted.nde.domain.Meal
-import com.schibsted.nde.domain.asDatabaseModel
+import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.domain.model.Meal
+import com.schibsted.nde.domain.model.asDatabaseModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject

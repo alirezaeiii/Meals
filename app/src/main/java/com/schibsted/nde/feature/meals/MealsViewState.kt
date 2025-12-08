@@ -1,6 +1,6 @@
 package com.schibsted.nde.feature.meals
 
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.base.BaseScreenState
 import com.schibsted.nde.base.ViewState
 

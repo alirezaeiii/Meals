@@ -1,4 +1,4 @@
-package com.schibsted.nde.database
+package com.schibsted.nde.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert

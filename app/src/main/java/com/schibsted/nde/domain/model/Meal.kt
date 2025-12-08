@@ -1,8 +1,8 @@
-package com.schibsted.nde.data
+package com.schibsted.nde.domain.model
 
-import com.schibsted.nde.domain.Meal
+import com.schibsted.nde.data.database.MealEntity
 
-data class MealResponse(
+data class Meal(
     val idMeal: String,
     val strMeal: String,
     val strCategory: String,
@@ -11,10 +11,10 @@ data class MealResponse(
     val strInstructions: String
 )
 
-fun List<MealResponse>.asDomainModel() = map(MealResponse::asDomainModel)
+fun List<Meal>.asDatabaseModel() = map(Meal::asDatabaseModel)
 
-private fun MealResponse.asDomainModel() = Meal(
-    idMeal = idMeal,
+private fun Meal.asDatabaseModel() = MealEntity(
+    id = idMeal,
     strMeal = strMeal,
     strCategory = strCategory,
     strMealThumb = strMealThumb,
