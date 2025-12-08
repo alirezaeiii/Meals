@@ -1,7 +1,7 @@
 package com.schibsted.nde.di
 
 import com.schibsted.nde.data.repository.MealsRepository
-import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.domain.repository.BaseListRepository
 import com.schibsted.nde.domain.model.Meal
 import dagger.Binds
 import dagger.Module
@@ -15,5 +15,5 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    internal abstract fun bindRepository(repository: MealsRepository): BaseRepository<Meal>
+    internal abstract fun bindRepository(repository: MealsRepository): BaseListRepository<Meal>
 }

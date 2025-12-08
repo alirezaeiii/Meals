@@ -2,7 +2,7 @@ package com.schibsted.nde.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.domain.repository.BaseListRepository
 import com.schibsted.nde.utils.Async
 import com.schibsted.nde.utils.withBase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<T, S: BaseScreenState<T>>(
-    private val repository: BaseRepository<T>,
+    private val repository: BaseListRepository<T>,
     initialState: S
 ) : ViewModel() {
 
