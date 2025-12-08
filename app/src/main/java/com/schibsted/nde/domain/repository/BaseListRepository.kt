@@ -13,8 +13,8 @@ abstract class BaseListRepository<T>(
 
     override fun getResult(): Flow<Async<List<T>>> = flow {
         emit(Async.Loading())
-        val dbData = query()
-        if (dbData.isNullOrEmpty()) {
+        val dbData = query()!!
+        if (dbData.isEmpty()) {
             load()
         } else {
             refresh(dbData)
