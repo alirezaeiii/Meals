@@ -5,10 +5,11 @@ import com.schibsted.nde.utils.Async
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 abstract class BaseListRepository<T>(
     context: Context,
-    ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher
 ) : BaseRepository<List<T>>(context, ioDispatcher) {
 
     override fun getResult(): Flow<Async<List<T>>> = flow {
@@ -19,5 +20,5 @@ abstract class BaseListRepository<T>(
         } else {
             refresh(dbData)
         }
-    }
+    }.flowOn(ioDispatcher)
 }
