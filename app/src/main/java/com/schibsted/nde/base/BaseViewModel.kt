@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<T, R, S: BaseScreenState<R>>(
+abstract class BaseViewModel<T, S: BaseScreenState<T>>(
     private val repository: BaseRepository<T>,
     initialState: S
 ) : ViewModel() {
