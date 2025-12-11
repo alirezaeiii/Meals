@@ -1,15 +1,15 @@
 package com.schibsted.nde.feature.meals
 
-import com.schibsted.nde.domain.repository.BaseListRepository
-import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.base.BaseViewModel
 import com.schibsted.nde.base.ViewState
+import com.schibsted.nde.domain.model.Meal
+import com.schibsted.nde.domain.repository.BaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class MealsViewModel @Inject constructor(
-    mealsRepository: BaseListRepository<Meal>
+    mealsRepository: BaseRepository<List<Meal>>
 ) : BaseViewModel<Meal, MealsViewState>(
     mealsRepository,
     MealsViewState(base = ViewState(isLoading = true))

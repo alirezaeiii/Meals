@@ -19,17 +19,18 @@ abstract class BaseRepository<T>(
 
     protected abstract suspend fun saveFetchResult(item: T)
 
-    open fun getResult(): Flow<Async<T>> = flow {
+    fun getResult(): Flow<Async<T>> = flow {
         emit(Async.Loading())
         val dbData = query()
-        dbData?.let {
-            refresh(it)
-        } ?: run {
-            load()
+
+        when {
+            dbData == null -> load()
+            dbData is List<*> && dbData.isEmpty() -> load()
+            else -> refresh(dbData)
         }
     }.flowOn(ioDispatcher)
 
-    protected suspend fun FlowCollector<Async<T>>.load() {
+    private suspend fun FlowCollector<Async<T>>.load() {
         try {
             // ****** MAKE NETWORK CALL, SAVE RESULT TO CACHE ******
             refresh()
@@ -40,7 +41,7 @@ abstract class BaseRepository<T>(
         }
     }
 
-    protected suspend fun FlowCollector<Async<T>>.refresh(dbData: T) {
+    private suspend fun FlowCollector<Async<T>>.refresh(dbData: T) {
         // ****** VIEW CACHE ******
         emit(Async.Success(dbData))
         emit(Async.Loading(true))
