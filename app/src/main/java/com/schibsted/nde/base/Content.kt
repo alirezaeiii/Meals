@@ -18,8 +18,8 @@ import com.schibsted.nde.feature.common.ErrorScreen
 import com.schibsted.nde.feature.common.ProgressScreen
 
 @Composable
-fun <T, S: BaseScreenState<T>> Content(
-    viewModel: BaseViewModel<T, S>,
+fun <T, R, S: BaseScreenState<R>> Content(
+    viewModel: BaseViewModel<T, R, S>,
     mainContent: @Composable (S) -> Unit
 ) {
     val state by viewModel.state.collectAsState()

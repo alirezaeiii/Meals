@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<T, S: BaseScreenState<T>>(
-    private val repository: BaseRepository<List<T>>,
+abstract class BaseViewModel<T, R, S: BaseScreenState<R>>(
+    private val repository: BaseRepository<T>,
     initialState: S
 ) : ViewModel() {
 
@@ -27,7 +27,7 @@ abstract class BaseViewModel<T, S: BaseScreenState<T>>(
         data class ShowWarning(val message: String) : UiEvent()
     }
 
-    protected abstract fun success(items: List<T>, isRefreshing: Boolean)
+    protected abstract fun success(items: T, isRefreshing: Boolean)
 
     fun refresh(isRefreshing: Boolean = false) {
         viewModelScope.launch {

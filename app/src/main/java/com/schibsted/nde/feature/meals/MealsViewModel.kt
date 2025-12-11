@@ -1,6 +1,6 @@
 package com.schibsted.nde.feature.meals
 
-import com.schibsted.nde.base.BaseViewModel
+import com.schibsted.nde.base.BaseListViewModel
 import com.schibsted.nde.base.ViewState
 import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.domain.repository.BaseRepository
@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MealsViewModel @Inject constructor(
     mealsRepository: BaseRepository<List<Meal>>
-) : BaseViewModel<Meal, MealsViewState>(
+) : BaseListViewModel<Meal, MealsViewState>(
     mealsRepository,
     MealsViewState(base = ViewState(isLoading = true))
 ) {
