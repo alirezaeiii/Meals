@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.schibsted.nde.domain.repository.BaseRepository
 import com.schibsted.nde.utils.Async
-import com.schibsted.nde.utils.withBase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +26,7 @@ abstract class BaseViewModel<T, S: BaseScreenState<T>>(
         data class ShowWarning(val message: String) : UiEvent()
     }
 
-    protected abstract fun success(items: T, isRefreshing: Boolean)
+    protected abstract fun onSuccess(items: T, isRefreshing: Boolean)
 
     fun refresh(isRefreshing: Boolean = false) {
         viewModelScope.launch {
@@ -39,7 +38,7 @@ abstract class BaseViewModel<T, S: BaseScreenState<T>>(
                         }
                     }
 
-                    is Async.Success -> success(uiState.data, isRefreshing)
+                    is Async.Success -> onSuccess(uiState.data, isRefreshing)
 
                     is Async.Error -> {
                         updateState { old ->
@@ -59,21 +58,9 @@ abstract class BaseViewModel<T, S: BaseScreenState<T>>(
     }
 
     private fun reduceLoading(old: S, isRefreshing: Boolean): S =
-        old.withBase(
-            old.base.copy(
-                isLoading = !isRefreshing,
-                isRefreshing = isRefreshing,
-                error = ""
-            )
-        )
+        old.withLoading(isRefreshing)
+
 
     private fun reduceError(old: S, msg: String, isWarning: Boolean): S =
-        old.withBase(
-            old.base.copy(
-                isLoading = false,
-                isRefreshing = false,
-                error = msg,
-                isWarning = isWarning
-            )
-        )
+        old.withError(msg, isWarning)
 }

@@ -19,7 +19,7 @@ class MealsViewModel @Inject constructor(
         refresh()
     }
 
-    override fun success(items: List<Meal>, isRefreshing: Boolean) {
+    override fun onSuccess(items: List<Meal>, isRefreshing: Boolean) {
         if (isRefreshing) {
             submitQuery(_state.value.query, items)
         } else {
