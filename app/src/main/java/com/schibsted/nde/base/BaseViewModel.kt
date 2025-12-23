@@ -7,11 +7,11 @@ import com.schibsted.nde.utils.Async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
-abstract class BaseViewModel<T, S: BaseScreenState<T>>(
+abstract class BaseViewModel<T, S : BaseScreenState<T>>(
     private val repository: BaseRepository<T>,
     initialState: S
 ) : ViewModel() {
@@ -30,28 +30,26 @@ abstract class BaseViewModel<T, S: BaseScreenState<T>>(
     protected abstract fun onSuccess(items: T, isRefreshing: Boolean)
 
     fun refresh(isRefreshing: Boolean = false) {
-        viewModelScope.launch {
-            repository.getResult().collectLatest { uiState ->
-                when (uiState) {
-                    is Async.Loading -> {
-                        updateState { old ->
-                            reduceLoading(old, uiState.isRefreshing)
-                        }
+        repository.getResult().onEach { uiState ->
+            when (uiState) {
+                is Async.Loading -> {
+                    updateState { old ->
+                        reduceLoading(old, uiState.isRefreshing)
                     }
+                }
 
-                    is Async.Success -> onSuccess(uiState.data, isRefreshing)
+                is Async.Success -> onSuccess(uiState.data, isRefreshing)
 
-                    is Async.Error -> {
-                        updateState { old ->
-                            reduceError(old, uiState.message, uiState.isWarning)
-                        }
-                        if (uiState.isWarning) {
-                            emitWarning(uiState.message)
-                        }
+                is Async.Error -> {
+                    updateState { old ->
+                        reduceError(old, uiState.message, uiState.isWarning)
+                    }
+                    if (uiState.isWarning) {
+                        emitWarning(uiState.message)
                     }
                 }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun updateState(reducer: (S) -> S) {
