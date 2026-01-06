@@ -33,7 +33,7 @@ abstract class BaseRepository<T>(
     private suspend fun FlowCollector<Async<T>>.load(dbData: T? = null) {
         dbData?.let {
             // ****** VIEW CACHE ******
-            emit(Async.Success(dbData))
+            emit(Async.Success(it))
             emit(Async.Loading(true))
         }
         try {
