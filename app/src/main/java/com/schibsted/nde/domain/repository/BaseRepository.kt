@@ -26,32 +26,30 @@ abstract class BaseRepository<T>(
         when {
             dbData == null -> load()
             dbData is List<*> && dbData.isEmpty() -> load()
-            else -> refresh(dbData)
+            else -> load(dbData)
         }
     }.flowOn(ioDispatcher)
 
-    private suspend fun FlowCollector<Async<T>>.load() {
-        try {
-            // ****** MAKE NETWORK CALL, SAVE RESULT TO CACHE ******
-            refresh()
+    private suspend fun FlowCollector<Async<T>>.load(dbData: T? = null) {
+        dbData?.let {
             // ****** VIEW CACHE ******
-            emit(Async.Success(query()!!))
-        } catch (_: Throwable) {
-            emit(Async.Error(context.getString(R.string.error_msg)))
+            emit(Async.Success(dbData))
+            emit(Async.Loading(true))
         }
-    }
-
-    private suspend fun FlowCollector<Async<T>>.refresh(dbData: T) {
-        // ****** VIEW CACHE ******
-        emit(Async.Success(dbData))
-        emit(Async.Loading(true))
         try {
             // ****** MAKE NETWORK CALL, SAVE RESULT TO CACHE ******
             refresh()
             // ****** VIEW CACHE ******
             emit(Async.Success(query()!!))
         } catch (_: Throwable) {
-            emit(Async.Error(context.getString(R.string.refresh_error_msg), true))
+            emit(
+                Async.Error(
+                    context.getString(
+                        if (dbData == null) R.string.error_msg else R.string.refresh_error_msg
+                    ),
+                    dbData != null
+                )
+            )
         }
     }
 
