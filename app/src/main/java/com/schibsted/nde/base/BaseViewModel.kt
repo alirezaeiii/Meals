@@ -2,7 +2,7 @@ package com.schibsted.nde.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.base.BaseRepository
 import com.schibsted.nde.utils.Async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

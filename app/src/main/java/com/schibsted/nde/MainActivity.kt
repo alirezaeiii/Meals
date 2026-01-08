@@ -8,6 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 fun NavGraph(navController: NavHostController) {
     NavHost(navController, startDestination = Screens.Meals.title) {
         composable(Screens.Meals.title) {
-            MealsScreen { meal ->
+            MealsScreen(hiltViewModel()) { meal ->
                 val json =
                     Uri.encode(Gson().toJson(meal, object : TypeToken<Meal>() {}.type))
                 navController.navigate(

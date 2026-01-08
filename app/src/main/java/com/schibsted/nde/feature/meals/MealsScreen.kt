@@ -54,9 +54,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.base.Content
+import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.feature.common.MealImage
 import com.schibsted.nde.ui.typography
 import kotlinx.coroutines.launch
@@ -66,7 +65,7 @@ import kotlinx.coroutines.launch
 @ExperimentalFoundationApi
 @Composable
 fun MealsScreen(
-    viewModel: MealsViewModel = hiltViewModel(),
+    viewModel: MealsViewModel,
     navigateToDetail: (Meal) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()

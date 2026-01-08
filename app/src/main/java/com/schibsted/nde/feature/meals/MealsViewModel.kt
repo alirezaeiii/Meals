@@ -3,7 +3,7 @@ package com.schibsted.nde.feature.meals
 import com.schibsted.nde.base.BaseViewModel
 import com.schibsted.nde.base.ViewState
 import com.schibsted.nde.domain.model.Meal
-import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.base.BaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

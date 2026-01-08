@@ -8,7 +8,7 @@ import com.schibsted.nde.data.response.asDomainModel
 import com.schibsted.nde.di.IoDispatcher
 import com.schibsted.nde.domain.model.Meal
 import com.schibsted.nde.domain.model.asDatabaseModel
-import com.schibsted.nde.domain.repository.BaseRepository
+import com.schibsted.nde.base.BaseRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject

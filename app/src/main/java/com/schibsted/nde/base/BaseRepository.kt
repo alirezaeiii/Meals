@@ -1,4 +1,4 @@
-package com.schibsted.nde.domain.repository
+package com.schibsted.nde.base
 
 import android.content.Context
 import com.schibsted.nde.R
