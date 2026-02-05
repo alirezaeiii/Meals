@@ -16,45 +16,43 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.schibsted.nde.feature.common.ErrorScreen
 import com.schibsted.nde.feature.common.ProgressScreen
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun <T, S: BaseScreenState<T>> Content(
+fun <T, S : BaseScreenState<T>> Content(
     viewModel: BaseViewModel<T, S>,
     mainContent: @Composable (S) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        if (state.base.isLoading) {
-            ProgressScreen()
-        }
+        when {
+            state.base.isLoading -> ProgressScreen()
+            state.base.error.isNotEmpty() && !state.base.isWarning ->
+                ErrorScreen(state.base.error) { viewModel.refresh() }
 
-        if (state.base.error.isNotEmpty() && !state.base.isWarning) {
-            ErrorScreen(state.base.error) { viewModel.refresh() }
-        }
-
-        val context = LocalContext.current
-        LaunchedEffect(Unit) {
-            viewModel.showWarningUiEvent.collect { event ->
-                when (event) {
-                    is BaseViewModel.UiEvent.ShowWarning ->
-                        Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+            else ->
+                Column {
+                    SwipeRefresh(
+                        state = rememberSwipeRefreshState(state.base.isRefreshing),
+                        onRefresh = { viewModel.refresh(true) },
+                        indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .fillMaxSize()
+                    ) {
+                        mainContent(state)
+                    }
                 }
-            }
         }
+    }
 
-        Column {
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(state.base.isRefreshing),
-                onRefresh = { viewModel.refresh(true) },
-                indicator = { state, trigger -> SwipeRefreshIndicator(state, trigger) },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .fillMaxSize()
-            ) {
-                if (!state.base.isLoading && (state.base.error.isEmpty() || state.base.isWarning)) {
-                    mainContent(state)
-                }
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.showWarningUiEvent.collectLatest { event ->
+            when (event) {
+                is BaseViewModel.UiEvent.ShowWarning ->
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
